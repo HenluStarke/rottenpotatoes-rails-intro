@@ -12,8 +12,11 @@ class MoviesController < ApplicationController
 
   def index
     if params.has_key?(:sorting_by)
+      @css_class = ApplicationHelper.get_index_th_css_class(params)
+p @css_class
       @movies = Movie.order(params[:sorting_by])
     else
+      @css_class = ApplicationHelper.get_index_th_css_class({})
       @movies = Movie.all
     end
   end
