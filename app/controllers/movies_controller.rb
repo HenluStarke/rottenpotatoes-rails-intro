@@ -11,24 +11,14 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movie_ratings = Movie.get_ratings 
-    @all_ratings = {}
-    @movie_ratings.each do | rating |
-      @all_ratings.store(rating, true)
-      if params.has_key?(:ratings)
-        if params[:ratings].has_key?(rating)
-          @all_ratings.store(rating, true)
-        else
-          @all_ratings.store(rating, false)
-        end
-      end
-    end
+    movie_ratings = Movie.get_ratings 
+    @all_ratings, selection = ApplicationHelper.get_selection(movie_ratings, params)
     if params.has_key?(:sorting_by)
       @css_class = ApplicationHelper.get_index_th_css_class(params)
-      @movies = Movie.order(params[:sorting_by])
+      @movies = Movie.where(rating: selection).order(params[:sorting_by])
     else
       @css_class = ApplicationHelper.get_index_th_css_class({})
-      @movies = Movie.all
+      @movies = Movie.where(rating: selection)
     end
   end
 
